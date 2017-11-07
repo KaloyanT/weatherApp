@@ -1,0 +1,32 @@
+version: "1"
+services:
+  mysql_db:
+    image: mysql:5.7
+    environment: 
+      MYSQL_DATABASE: 'weatherapp_db'
+      MYSQL_USER: 'weatherapp_db_user'
+      MYSQL_PASSWORD: 'weatherAppDB_pwd'
+      MYSQL_ROOT_PASSWORD: 'weatherAppDB_pwd'
+    ports: 
+      - 3306:3306
+  backend:
+    image: weatherapp/backend
+    depends_on: 
+      - mysql_db
+    links:
+      - mysql_db
+    ports: 
+      - 8080:8080
+    environment: 
+      - DATABASE_HOST=mysql_db
+      - DATABASE_PORT=3306
+      - DATABASE_NAME=weatherapp_db
+      - DATABASE_USER=weatherapp_db_user
+      - DATABASE_PASSWORD=weatherAppDB_pwd
+    # To be further configured
+    frontend:
+    build: frontend
+    depends_on:
+      - backend
+    ports:
+      - "80:4300"

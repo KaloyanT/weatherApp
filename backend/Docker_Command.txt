@@ -1,0 +1,22 @@
+mvn clean package docker:build
+Requirements: 
+MySQL-Server should be running at the address given for the property 
+spring.datasource.url under database/src/main/resources/application.properties 
+Set the address to localhost or 192.168.99.100 (The IP of the Docker VirtualBox VM). After that you can run the mvn command given below 
+Note: Look at the application.properties and not application-docker.properties
+
+Also mvn clean package -DskipTests docker:build can be used. If the configuration in pom.xml uses a variable for the skipTests property, 
+the Docker Image can be built with mvn clean package -DskipTests=true or false if the Tests have to be executed
+
+Docker command: 
+
+First create a network in which we will have the MySQL Database and the Database Microservice: 
+docker network create weatherapp_network
+
+Create a MySQL Docker Container: 
+docker run --name weatherapp_db -d -p 3306:3306 --network-alias weatherapp_db --network weatherapp_network -e MYSQL_DATABASE=weatherapp_db \
+		-e MYSQL_USER=weatherapp_db_user -e MYSQL_PASSWORD=weatherAppDB_pwd -e MYSQL_ROOT_PASSWORD=weatherAppDB_pwd mysql/:latest
+
+Create the Database Microservice Container: 
+docker run --name weatherapp_backend -d -p 8080:8080 --network weatherapp_network -e DATABASE_HOST=weatherapp_db -e DATABASE_PORT=3306 \ 
+			-e DATABASE_NAME=weatherapp_db -e DATABASE_USER=weatherapp_db_user -e DATABASE_PASSWORD=weatherAppDB_pwd weatherapp/backend
