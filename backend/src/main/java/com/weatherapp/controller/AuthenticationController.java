@@ -30,7 +30,7 @@ import javax.servlet.http.HttpServletRequest;
 
 
 @RestController
-@RequestMapping("auth")
+@RequestMapping("/auth")
 public class AuthenticationController {
 
     @Autowired
@@ -73,7 +73,7 @@ public class AuthenticationController {
         return ResponseEntity.ok(new AuthenticationResponse(token));
     }
 
-    @RequestMapping(value = "${weatherapp.route.authentication.refresh}", method = RequestMethod.GET)
+    @RequestMapping(value = "/refresh", method = RequestMethod.GET)
     public ResponseEntity<?> authenticationRequest(HttpServletRequest request) {
         String token = request.getHeader(this.tokenHeader);
         String username = this.tokenUtils.getUsernameFromToken(token);
@@ -99,10 +99,10 @@ public class AuthenticationController {
             return new ResponseEntity<>(new CustomErrorType("Invalid username"), HttpStatus.BAD_REQUEST);
         }
 
-        /*
+
         if(!StringVerifier.validatePassword(newUser.getPassword())) {
             return new ResponseEntity<>(new CustomErrorType("Invalid password"), HttpStatus.BAD_REQUEST);
-        }*/
+        }
 
         if(!StringVerifier.validateEmail(newUser.getEmail())) {
             return new ResponseEntity<>(new CustomErrorType("Invalid email"), HttpStatus.BAD_REQUEST);
@@ -111,7 +111,6 @@ public class AuthenticationController {
         String password = bCryptPasswordEncoder.encode(newUser.getPassword());
 
         newUser.setPassword(password);
-        newUser.setAuthorities("ADMIN");
 
         userRepository.save(newUser);
 

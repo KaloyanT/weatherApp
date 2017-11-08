@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/protected")
 public class SampleController {
 
-
+    // hasRole requires the roles to be saved in the form ROLE_userRole, i.e. with a ROLE_ prefix
     @RequestMapping(value = "/message", method = RequestMethod.GET)
-    //@PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     //@PreAuthorize("@securityService.hasProtectedAccess()")
     public ResponseEntity<?> getMessage() {
         return new ResponseEntity<>("message", HttpStatus.OK);
