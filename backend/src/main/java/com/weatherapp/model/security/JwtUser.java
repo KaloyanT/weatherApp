@@ -12,7 +12,7 @@ public class JwtUser implements UserDetails {
     private String username;
     private String password;
     private String email;
-    private Date lastPasswordReset;
+    private Date lastPasswordResetDate;
     private Collection<? extends GrantedAuthority> authorities;
     private Boolean accountNonExpired = true;
     private Boolean accountNonLocked = true;
@@ -23,12 +23,12 @@ public class JwtUser implements UserDetails {
         super();
     }
 
-    public JwtUser(Long id, String username, String password, String email, Date lastPasswordReset, Collection<? extends GrantedAuthority> authorities) {
+    public JwtUser(Long id, String username, String password, String email, Date lastPasswordResetDate, Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.email = email;
-        this.lastPasswordReset = lastPasswordReset;
+        this.lastPasswordResetDate = lastPasswordResetDate;
         this.authorities = authorities;
     }
 
@@ -67,12 +67,12 @@ public class JwtUser implements UserDetails {
     }
 
     @JsonIgnore
-    public Date getLastPasswordReset() {
-        return lastPasswordReset;
+    public Date getLastPasswordResetDate() {
+        return lastPasswordResetDate;
     }
 
-    public void setLastPasswordReset(Date lastPasswordReset) {
-        this.lastPasswordReset = lastPasswordReset;
+    public void setLastPasswordResetDate(Date lastPasswordResetDate) {
+        this.lastPasswordResetDate = lastPasswordResetDate;
     }
 
     @Override
