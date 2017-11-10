@@ -1,8 +1,8 @@
 package com.weatherapp.model.jwt;
 
-import com.weatherapp.model.base.ModelBase;
+import java.io.Serializable;
 
-public class JwtAuthenticationRequest extends ModelBase {
+public class JwtAuthenticationRequest implements Serializable {
 
     private static final long serialVersionUID = 6624726180748515507L;
     private String username;

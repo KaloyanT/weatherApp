@@ -91,7 +91,7 @@ public class AuthenticationController {
 
 
     @RequestMapping(value = "/sign-up", method = RequestMethod.POST)
-    private ResponseEntity<?> userSignUp(@RequestBody User newUser) {
+    public ResponseEntity<?> userSignUp(@RequestBody User newUser) {
 
         if(newUser == null) {
             return new ResponseEntity<>(new CustomErrorType("Invalid new user"), HttpStatus.BAD_REQUEST);

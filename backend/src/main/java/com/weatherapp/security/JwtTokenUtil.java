@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mobile.device.Device;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -75,16 +74,10 @@ public class JwtTokenUtil {
     }
 
     private Claims getClaimsFromToken(String token) {
-        Claims claims;
-        try {
-            claims = Jwts.parser()
-                    .setSigningKey(this.secret.getBytes("UTF-8"))
-                    .parseClaimsJws(token)
-                    .getBody();
-        } catch (Exception e) {
-            claims = null;
-        }
-        return claims;
+         return Jwts.parser()
+                 .setSigningKey(this.secret)
+                 .parseClaimsJws(token)
+                 .getBody();
     }
 
     private Date generateCurrentDate() {
@@ -134,23 +127,12 @@ public class JwtTokenUtil {
         Date creationDate = generateCurrentDate();
         Date expirationDate = generateExpirationDate(creationDate);
 
-        try {
-            return Jwts.builder()
-                    .setClaims(claims)
-                    .setIssuedAt(creationDate)
-                    .setExpiration(expirationDate)
-                    .signWith(SignatureAlgorithm.HS512, this.secret.getBytes("UTF-8"))
-                    .compact();
-        } catch (UnsupportedEncodingException ex) {
-            //didn't want to have this method throw the exception, would rather log it and sign the token like it was before
-            logger.warn(ex.getMessage());
-            return Jwts.builder()
-                    .setClaims(claims)
-                    .setIssuedAt(creationDate)
-                    .setExpiration(expirationDate)
-                    .signWith(SignatureAlgorithm.HS512, this.secret)
-                    .compact();
-        }
+        return Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(creationDate)
+                .setExpiration(expirationDate)
+                .signWith(SignatureAlgorithm.HS512, this.secret)
+                .compact();
     }
 
     public Boolean canTokenBeRefreshed(String token, Date lastPasswordReset) {
@@ -167,7 +149,6 @@ public class JwtTokenUtil {
         JwtUser user = (JwtUser) userDetails;
         final String username = this.getUsernameFromToken(token);
         final Date created = this.getCreatedDateFromToken(token);
-        final Date expiration = this.getExpirationDateFromToken(token);
         return (username.equals(user.getUsername()) && !(this.isTokenExpired(token)) && !(this.isCreatedBeforeLastPasswordReset(created, user.getLastPasswordResetDate())));
     }
 
