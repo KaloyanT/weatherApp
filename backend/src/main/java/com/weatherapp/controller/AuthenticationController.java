@@ -1,11 +1,11 @@
 package com.weatherapp.controller;
 
 import com.weatherapp.model.entity.User;
-import com.weatherapp.model.json.AuthenticationRequest;
-import com.weatherapp.model.json.AuthenticationResponse;
-import com.weatherapp.model.security.WeatherAppUser;
+import com.weatherapp.model.jwt.JwtAuthenticationRequest;
+import com.weatherapp.model.jwt.JwtAuthenticationResponse;
+import com.weatherapp.model.security.JwtUser;
 import com.weatherapp.repository.UserRepository;
-import com.weatherapp.security.TokenUtils;
+import com.weatherapp.security.JwtTokenUtil;
 import com.weatherapp.util.CustomErrorType;
 import com.weatherapp.util.StringVerifier;
 import org.apache.log4j.Logger;
@@ -48,39 +48,39 @@ public class AuthenticationController {
     private AuthenticationManager authenticationManager;
 
     @Autowired
-    private TokenUtils tokenUtils;
+    private JwtTokenUtil jwtTokenUtil;
 
     @Autowired
     private UserDetailsService userDetailsService;
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<?> authenticationRequest(@RequestBody AuthenticationRequest authenticationRequest) throws AuthenticationException {
+    public ResponseEntity<?> authenticationRequest(@RequestBody JwtAuthenticationRequest jwtAuthenticationRequest) throws AuthenticationException {
 
         // Perform the authentication
         Authentication authentication = this.authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        authenticationRequest.getUsername(),
-                        authenticationRequest.getPassword()
+                        jwtAuthenticationRequest.getUsername(),
+                        jwtAuthenticationRequest.getPassword()
                 )
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         // Reload password post-authentication so we can generate token
-        UserDetails userDetails = this.userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
-        String token = this.tokenUtils.generateToken(userDetails);
+        UserDetails userDetails = this.userDetailsService.loadUserByUsername(jwtAuthenticationRequest.getUsername());
+        String token = this.jwtTokenUtil.generateToken(userDetails);
 
         // Return the token
-        return ResponseEntity.ok(new AuthenticationResponse(token));
+        return ResponseEntity.ok(new JwtAuthenticationResponse(token));
     }
 
     @RequestMapping(value = "/refresh", method = RequestMethod.GET)
     public ResponseEntity<?> authenticationRequest(HttpServletRequest request) {
         String token = request.getHeader(this.tokenHeader);
-        String username = this.tokenUtils.getUsernameFromToken(token);
-        WeatherAppUser user = (WeatherAppUser) this.userDetailsService.loadUserByUsername(username);
-        if (this.tokenUtils.canTokenBeRefreshed(token, user.getLastPasswordReset())) {
-            String refreshedToken = this.tokenUtils.refreshToken(token);
-            return ResponseEntity.ok(new AuthenticationResponse(refreshedToken));
+        String username = this.jwtTokenUtil.getUsernameFromToken(token);
+        JwtUser user = (JwtUser) this.userDetailsService.loadUserByUsername(username);
+        if (this.jwtTokenUtil.canTokenBeRefreshed(token, user.getLastPasswordReset())) {
+            String refreshedToken = this.jwtTokenUtil.refreshToken(token);
+            return ResponseEntity.ok(new JwtAuthenticationResponse(refreshedToken));
         } else {
             return ResponseEntity.badRequest().body(null);
         }

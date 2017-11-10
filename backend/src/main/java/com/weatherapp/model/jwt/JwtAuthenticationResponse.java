@@ -1,17 +1,17 @@
-package com.weatherapp.model.json;
+package com.weatherapp.model.jwt;
 
 import com.weatherapp.model.base.ModelBase;
 
-public class AuthenticationResponse extends ModelBase {
+public class JwtAuthenticationResponse extends ModelBase {
 
     private static final long serialVersionUID = -6624726180748515507L;
     private String token;
 
-    public AuthenticationResponse() {
+    public JwtAuthenticationResponse() {
         super();
     }
 
-    public AuthenticationResponse(String token) {
+    public JwtAuthenticationResponse(String token) {
         this.setToken(token);
     }
 

@@ -1,6 +1,6 @@
 package com.weatherapp.security;
 
-import com.weatherapp.model.security.WeatherAppUser;
+import com.weatherapp.model.security.JwtUser;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
-public class TokenUtils {
+public class JwtTokenUtil {
 
     private final Logger logger = Logger.getLogger(this.getClass());
 
@@ -141,7 +141,7 @@ public class TokenUtils {
     }
 
     public Boolean validateToken(String token, UserDetails userDetails) {
-        WeatherAppUser user = (WeatherAppUser) userDetails;
+        JwtUser user = (JwtUser) userDetails;
         final String username = this.getUsernameFromToken(token);
         final Date created = this.getCreatedDateFromToken(token);
         final Date expiration = this.getExpirationDateFromToken(token);

@@ -1,6 +1,6 @@
 package com.weatherapp.service.impl;
 
-import com.weatherapp.model.factory.WeatherappUserFactory;
+import com.weatherapp.model.factory.JwtUserFactory;
 import com.weatherapp.model.entity.User;
 import com.weatherapp.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +30,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
         authorities.add(new SimpleGrantedAuthority("Admin"));
 
-        return WeatherappUserFactory.create(user);
+        return JwtUserFactory.create(user);
     }
 }

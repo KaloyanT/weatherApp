@@ -15,13 +15,13 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
-public class AuthenticationTokenFilter extends UsernamePasswordAuthenticationFilter {
+public class JwtAuthenticationTokenFilter extends UsernamePasswordAuthenticationFilter {
 
     @Value("${weatherapp.token.header}")
     private String tokenHeader;
 
     @Autowired
-    private TokenUtils tokenUtils;
+    private JwtTokenUtil jwtTokenUtil;
 
     @Autowired
     private UserDetailsService userDetailsService;
@@ -31,11 +31,11 @@ public class AuthenticationTokenFilter extends UsernamePasswordAuthenticationFil
 
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         String authToken = httpRequest.getHeader(this.tokenHeader);
-        String username = this.tokenUtils.getUsernameFromToken(authToken);
+        String username = this.jwtTokenUtil.getUsernameFromToken(authToken);
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
-            if (this.tokenUtils.validateToken(authToken, userDetails)) {
+            if (this.jwtTokenUtil.validateToken(authToken, userDetails)) {
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpRequest));
                 SecurityContextHolder.getContext().setAuthentication(authentication);

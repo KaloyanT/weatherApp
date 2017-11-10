@@ -1,8 +1,7 @@
 package com.weatherapp.config;
 
-import com.weatherapp.security.AuthenticationTokenFilter;
+import com.weatherapp.security.JwtAuthenticationTokenFilter;
 import com.weatherapp.security.EntryPointUnauthorizedHandler;
-import com.weatherapp.service.SecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,9 +30,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     private UserDetailsService userDetailsService;
 
     @Autowired
-    private SecurityService securityService;
-
-    @Autowired
     public void configureAuthentication(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
         authenticationManagerBuilder
                 .userDetailsService(this.userDetailsService)
@@ -52,15 +48,10 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public AuthenticationTokenFilter authenticationTokenFilterBean() throws Exception {
-        AuthenticationTokenFilter authenticationTokenFilter = new AuthenticationTokenFilter();
-        authenticationTokenFilter.setAuthenticationManager(authenticationManagerBean());
-        return authenticationTokenFilter;
-    }
-
-    @Bean
-    public SecurityService securityService() {
-        return this.securityService;
+    public JwtAuthenticationTokenFilter authenticationTokenFilterBean() throws Exception {
+        JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter = new JwtAuthenticationTokenFilter();
+        jwtAuthenticationTokenFilter.setAuthenticationManager(authenticationManagerBean());
+        return jwtAuthenticationTokenFilter;
     }
 
     @Override

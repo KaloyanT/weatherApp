@@ -1,18 +1,18 @@
-package com.weatherapp.model.json;
+package com.weatherapp.model.jwt;
 
 import com.weatherapp.model.base.ModelBase;
 
-public class AuthenticationRequest extends ModelBase {
+public class JwtAuthenticationRequest extends ModelBase {
 
     private static final long serialVersionUID = 6624726180748515507L;
     private String username;
     private String password;
 
-    public AuthenticationRequest() {
+    public JwtAuthenticationRequest() {
         super();
     }
 
-    public AuthenticationRequest(String username, String password) {
+    public JwtAuthenticationRequest(String username, String password) {
         this.setUsername(username);
         this.setPassword(password);
     }

@@ -1,22 +1,22 @@
 package com.weatherapp.model.factory;
 
 import com.weatherapp.model.entity.User;
-import com.weatherapp.model.security.WeatherAppUser;
+import com.weatherapp.model.security.JwtUser;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 
 import java.util.Collection;
 
-public class WeatherappUserFactory {
+public class JwtUserFactory {
 
-    public static WeatherAppUser create(User user) {
+    public static JwtUser create(User user) {
         Collection<? extends GrantedAuthority> authorities;
         try {
             authorities = AuthorityUtils.commaSeparatedStringToAuthorityList(user.getAuthorities());
         } catch (Exception e) {
             authorities = null;
         }
-        return new WeatherAppUser(
+        return new JwtUser(
                 user.getUserId(),
                 user.getUsername(),
                 user.getPassword(),

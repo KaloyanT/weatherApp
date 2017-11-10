@@ -6,7 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Date;
 
-public class WeatherAppUser implements UserDetails {
+public class JwtUser implements UserDetails {
 
     private Long id;
     private String username;
@@ -19,11 +19,11 @@ public class WeatherAppUser implements UserDetails {
     private Boolean credentialsNonExpired = true;
     private Boolean enabled = true;
 
-    public WeatherAppUser() {
+    public JwtUser() {
         super();
     }
 
-    public WeatherAppUser(Long id, String username, String password, String email, Date lastPasswordReset, Collection<? extends GrantedAuthority> authorities) {
+    public JwtUser(Long id, String username, String password, String email, Date lastPasswordReset, Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.username = username;
         this.password = password;
