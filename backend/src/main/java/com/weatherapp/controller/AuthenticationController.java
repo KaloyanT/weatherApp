@@ -27,6 +27,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 
 @RestController
@@ -108,8 +111,19 @@ public class AuthenticationController {
             return new ResponseEntity<>(new CustomErrorType("Invalid email"), HttpStatus.BAD_REQUEST);
         }
 
-        String password = bCryptPasswordEncoder.encode(newUser.getPassword());
+        SimpleDateFormat dateFormater = new SimpleDateFormat("dd/MM/yyyy hh::mm:ss");
+        Date currentDate = new Date();
+        String currentDateAsString = dateFormater.format(currentDate);
+        try {
+            currentDate = dateFormater.parse(currentDateAsString);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
+        String password = bCryptPasswordEncoder.encode(newUser.getPassword());
+        
+        newUser.setLastPasswordResetDate(currentDate);
+        newUser.setEnabled(true);
         newUser.setPassword(password);
 
         userRepository.save(newUser);

@@ -21,7 +21,7 @@ public class JwtUserFactory {
                 user.getUsername(),
                 user.getPassword(),
                 user.getEmail(),
-                user.getLastPasswordReset(),
+                user.getLastPasswordResetDate(),
                 authorities
         );
     }

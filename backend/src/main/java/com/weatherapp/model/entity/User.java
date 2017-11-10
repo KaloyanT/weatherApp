@@ -10,6 +10,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Column;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Date;
 
 @Entity(name = "User")
@@ -25,20 +27,31 @@ public class User {
 
     @Basic(optional = false)
     @Column(unique = true)
+    @NotNull
+    @Size(min = 4, max = 50)
     private String username;
 
     @Basic(optional = false)
+    @NotNull
+    @Size(min = 8, max = 1000)
     private String password;
 
     @Basic(optional = false)
     @Column(unique = true)
+    @NotNull
     private String email;
 
-    @Column(name = "lastPasswordReset")
-    private Date lastPasswordReset;
+    @Column(name = "lastPasswordResetDate")
+    @NotNull
+    private Date lastPasswordResetDate;
 
     @Column(name = "authorities")
+    @NotNull
     private String authorities;
+
+    @Column(name = "enabled")
+    @NotNull
+    private Boolean enabled;
 
     public long getUserId() {
         return userId;
@@ -74,12 +87,12 @@ public class User {
         this.email = email;
     }
 
-    public Date getLastPasswordReset() {
-        return lastPasswordReset;
+    public Date getLastPasswordResetDate() {
+        return lastPasswordResetDate;
     }
 
-    public void setLastPasswordReset(Date lastPasswordReset) {
-        this.lastPasswordReset = lastPasswordReset;
+    public void setLastPasswordResetDate(Date lastPasswordResetDate) {
+        this.lastPasswordResetDate = lastPasswordResetDate;
     }
 
     public String getAuthorities() {
@@ -88,6 +101,14 @@ public class User {
 
     public void setAuthorities(String authorities) {
         this.authorities = authorities;
+    }
+
+    public Boolean getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
     }
 
     /**
