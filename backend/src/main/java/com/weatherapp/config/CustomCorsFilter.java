@@ -11,9 +11,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-
 @Component
-public class CorsFilter implements Filter {
+public class CustomCorsFilter implements Filter {
 
     @Value("${weatherapp.token.header}")
     private String tokenHeader;
