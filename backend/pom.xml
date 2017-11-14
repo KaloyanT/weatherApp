@@ -92,6 +92,14 @@
 			<version>1.6</version>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/tk.plogitech/darksky-forecast-api-jackson -->
+		<dependency>
+			<groupId>tk.plogitech</groupId>
+			<artifactId>darksky-forecast-api-jackson</artifactId>
+			<version>0.10</version>
+		</dependency>
+
+
 	</dependencies>
 
 	<build>

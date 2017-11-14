@@ -2,13 +2,17 @@ package com.weatherapp.model.entity;
 
 import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity(name = "City")
 @Table(name = "city")
@@ -39,17 +43,13 @@ public class City {
     private String country;
 
     @Basic
-    @Column(name = "openWeatherId", unique = true)
-    private long openWeatherId;
-
-    @Basic
-    @Column(name = "darkSkyId", unique = true)
-    private long darkSkyId;
+    @Column(name = "openWeatherMapId", unique = true)
+    private long openWeatherMapId;
 
     // private TimeZone timeZone;
 
-    // @OneToMany
-    // private Set<Forecast> forecasts = new HashSet<Forecast>();
+    @OneToMany(mappedBy = "city", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Forecast> forecasts = new HashSet<Forecast>();
 
     public long getCityId() {
         return cityId;
@@ -91,20 +91,30 @@ public class City {
         this.country = country;
     }
 
-    public long getOpenWeatherId() {
-        return openWeatherId;
+    public long getOpenWeatherMapId() {
+        return openWeatherMapId;
     }
 
-    public void setOpenWeatherId(long openWeatherId) {
-        this.openWeatherId = openWeatherId;
+    public void setOpenWeatherMapId(long openWeatherMapId) {
+        this.openWeatherMapId = openWeatherMapId;
     }
 
-    public long getDarkSkyId() {
-        return darkSkyId;
+    public Set<Forecast> getForecasts() {
+        return forecasts;
     }
 
-    public void setDarkSkyId(long darkSkyId) {
-        this.darkSkyId = darkSkyId;
+    public void setForecasts(Set<Forecast> forecasts) {
+        this.forecasts = forecasts;
+    }
+
+    public void addForecast(Forecast forecast) {
+        forecasts.add(forecast);
+        forecast.setCity(this);
+    }
+
+    public void removeForecast(Forecast forecast) {
+        forecasts.remove(forecast);
+        forecast.setCity(null);
     }
 
     /**

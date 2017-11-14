@@ -4,9 +4,16 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
+import java.util.Date;
 import java.util.Objects;
 
 @Entity(name = "Forecast")
@@ -64,10 +71,15 @@ public class Forecast {
     private String icon;
 
     // in UNIX Time
-    // private TimeStamp timeStamp;
+    @Basic
+    @Column(name = "timestamp")
+    @NotNull
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date timeStamp;
 
-    // @ManyToOne
-    // private City city;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "city_cityId")
+    private City city;
 
 
     public long getForecastId() {
@@ -164,6 +176,22 @@ public class Forecast {
 
     public void setIcon(String icon) {
         this.icon = icon;
+    }
+
+    public Date getTimeStamp() {
+        return timeStamp;
+    }
+
+    public void setTimeStamp(Date timeStamp) {
+        this.timeStamp = timeStamp;
+    }
+
+    public City getCity() {
+        return city;
+    }
+
+    public void setCity(City city) {
+        this.city = city;
     }
 
     /**
