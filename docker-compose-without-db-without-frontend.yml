@@ -8,9 +8,9 @@ services:
     environment: 
       - DATABASE_HOST=localhost
       - DATABASE_PORT=3306
-      - DATABASE_NAME=
-      - DATABASE_USER=
-      - DATABASE_PASSWORD=
+      - DATABASE_NAME=weatherapp_db
+      - DATABASE_USER=weatherapp_db_user
+      - DATABASE_PASSWORD=weatherAppDB_pwd
       - TOKEN_HEADER=
       - TOKEN_SECRET=
       - TOKEN_PREFIX=
