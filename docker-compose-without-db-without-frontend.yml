@@ -1,0 +1,19 @@
+# Use this docker-compose if there is a local (or a remote one) MySQL database
+version: "1"
+services:
+  backend:
+    image: weatherapp/backend
+    ports: 
+      - 8080:8080
+    environment: 
+      - DATABASE_HOST=localhost
+      - DATABASE_PORT=3306
+      - DATABASE_NAME=
+      - DATABASE_USER=
+      - DATABASE_PASSWORD=
+      - TOKEN_HEADER=
+      - TOKEN_SECRET=
+      - TOKEN_PREFIX=
+      - TOKEN_EXPIRATION=
+      - DARKSKY_API_KEY=
+    # To be further configured

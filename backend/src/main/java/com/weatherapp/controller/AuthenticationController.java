@@ -1,5 +1,7 @@
 package com.weatherapp.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.weatherapp.model.entity.User;
 import com.weatherapp.model.jwt.JwtAuthenticationRequest;
 import com.weatherapp.model.jwt.JwtAuthenticationResponse;
@@ -13,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.mobile.device.Device;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,9 +25,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
@@ -101,8 +107,7 @@ public class AuthenticationController {
         if(!StringVerifier.validateUsername(newUser.getUsername())) {
             return new ResponseEntity<>(new CustomErrorType("Invalid username"), HttpStatus.BAD_REQUEST);
         }
-
-
+        
         if(!StringVerifier.validatePassword(newUser.getPassword())) {
             return new ResponseEntity<>(new CustomErrorType("Invalid password"), HttpStatus.BAD_REQUEST);
         }
@@ -111,11 +116,11 @@ public class AuthenticationController {
             return new ResponseEntity<>(new CustomErrorType("Invalid email"), HttpStatus.BAD_REQUEST);
         }
 
-        SimpleDateFormat dateFormater = new SimpleDateFormat("dd/MM/yyyy hh::mm:ss");
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy hh::mm:ss");
         Date currentDate = new Date();
-        String currentDateAsString = dateFormater.format(currentDate);
+        String currentDateAsString = dateFormatter.format(currentDate);
         try {
-            currentDate = dateFormater.parse(currentDateAsString);
+            currentDate = dateFormatter.parse(currentDateAsString);
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -129,5 +134,20 @@ public class AuthenticationController {
         userRepository.save(newUser);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+
+    // Handle empty POST Body
+    @ExceptionHandler({HttpMessageNotReadableException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public ResponseEntity<?> resolveException() {
+
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode response = mapper.createObjectNode();
+
+        response.put("Exception! Reason", "Empty Body");
+
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 }

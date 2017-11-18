@@ -20,13 +20,15 @@ public class MeasurementUnit {
     private long measurementUnitId;
 
     @Basic
-    @Column(name = "measurementUnitName")
-    private String measurementUnitName;
+    @Column(name = "quantity")
+    private String quantity;
 
+    // For simplicity save only 1 measurement unit for a given quantity
     @Basic
     @Column(name = "measurementUnit")
     private String measurementUnit;
 
+    // Potentially save the measurement units in a Set
     // private Set<String> measurementUnits = new HashSet<String>();
 
     public long getMeasurementUnitId() {
@@ -37,20 +39,20 @@ public class MeasurementUnit {
         this.measurementUnitId = measurementUnitId;
     }
 
-    public String getMeasurementUnitName() {
-        return measurementUnitName;
-    }
-
-    public void setMeasurementUnitName(String measurementUnitName) {
-        this.measurementUnitName = measurementUnitName;
-    }
-
     public String getMeasurementUnit() {
         return measurementUnit;
     }
 
     public void setMeasurementUnit(String measurementUnit) {
         this.measurementUnit = measurementUnit;
+    }
+
+    public String getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(String quantity) {
+        this.quantity = quantity;
     }
 
     /**
@@ -75,6 +77,11 @@ public class MeasurementUnit {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(this.measurementUnitId + this.measurementUnitName); // + this.measurementUnits
+        return Objects.hash(this.measurementUnitId + this.measurementUnit); // + this.measurementUnits
+    }
+
+    @Override
+    public String toString() {
+        return this.measurementUnit;
     }
 }

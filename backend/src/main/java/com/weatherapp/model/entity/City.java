@@ -1,10 +1,12 @@
 package com.weatherapp.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -42,14 +44,11 @@ public class City {
     @NotNull
     private String country;
 
-    @Basic
-    @Column(name = "openWeatherMapId", unique = true)
-    private long openWeatherMapId;
-
     // private TimeZone timeZone;
 
-    @OneToMany(mappedBy = "city", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Forecast> forecasts = new HashSet<Forecast>();
+    @OneToMany(mappedBy = "city", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JsonIgnore
+    private Set<DarkSkyForecast> darkSkyForecasts = new HashSet<DarkSkyForecast>();
 
     public long getCityId() {
         return cityId;
@@ -91,30 +90,22 @@ public class City {
         this.country = country;
     }
 
-    public long getOpenWeatherMapId() {
-        return openWeatherMapId;
+    public Set<DarkSkyForecast> getDarkSkyForecasts() {
+        return darkSkyForecasts;
     }
 
-    public void setOpenWeatherMapId(long openWeatherMapId) {
-        this.openWeatherMapId = openWeatherMapId;
+    public void setDarkSkyForecasts(Set<DarkSkyForecast> darkSkyForecasts) {
+        this.darkSkyForecasts = darkSkyForecasts;
     }
 
-    public Set<Forecast> getForecasts() {
-        return forecasts;
+    public void addForecast(DarkSkyForecast darkSkyForecast) {
+        darkSkyForecasts.add(darkSkyForecast);
+        darkSkyForecast.setCity(this);
     }
 
-    public void setForecasts(Set<Forecast> forecasts) {
-        this.forecasts = forecasts;
-    }
-
-    public void addForecast(Forecast forecast) {
-        forecasts.add(forecast);
-        forecast.setCity(this);
-    }
-
-    public void removeForecast(Forecast forecast) {
-        forecasts.remove(forecast);
-        forecast.setCity(null);
+    public void removeForecast(DarkSkyForecast darkSkyForecast) {
+        darkSkyForecasts.remove(darkSkyForecast);
+        darkSkyForecast.setCity(null);
     }
 
     /**

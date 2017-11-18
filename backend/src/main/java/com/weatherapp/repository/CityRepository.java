@@ -10,6 +10,4 @@ public interface CityRepository extends CrudRepository<City, Long> {
     City findByNameAndCountry(final String cityName, final String countryName);
 
     City findByLatitudeAndLongitude(final double latitude, final double longtitude);
-
-    City findByOpenWeatherMapId(final long openWeatherMapId);
 }
