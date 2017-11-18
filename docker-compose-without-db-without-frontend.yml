@@ -1,5 +1,5 @@
 # Use this docker-compose if there is a local (or a remote one) MySQL database
-version: "1"
+version: "3.3"
 services:
   backend:
     image: weatherapp/backend
@@ -11,7 +11,7 @@ services:
       - DATABASE_NAME=weatherapp_db
       - DATABASE_USER=weatherapp_db_user
       - DATABASE_PASSWORD=weatherAppDB_pwd
-      - TOKEN_HEADER=
+      - TOKEN_HEADER=Authorization
       - TOKEN_SECRET=
       - TOKEN_PREFIX=
       - TOKEN_EXPIRATION=
