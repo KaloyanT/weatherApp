@@ -73,6 +73,7 @@ public class WeatherAppDarkSkyClient {
         return forecast;
     }
 
+    
     /**
      * Returns the current forecast for the given city in the given country
      * @param cityName The name of the city for which the forecast should be returned
@@ -110,6 +111,7 @@ public class WeatherAppDarkSkyClient {
 
         return forecast;
     }
+
 
     /**
      * Converts all units, which are measured in percents, from 0.x notation to
