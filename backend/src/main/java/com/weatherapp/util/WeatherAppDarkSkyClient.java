@@ -226,7 +226,7 @@ public class WeatherAppDarkSkyClient {
             return json;
         }
 
-        json.put("time", dailyDataPoint.getTime().getEpochSecond());
+        json.put("timeStamp", dailyDataPoint.getTime().getEpochSecond());
         json.put("summary", dailyDataPoint.getSummary());
         json.put("icon", dailyDataPoint.getIcon());
         json.put("temperatureLow", dailyDataPoint.getTemperatureMin());
