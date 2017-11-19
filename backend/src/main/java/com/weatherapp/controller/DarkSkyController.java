@@ -170,7 +170,7 @@ public class DarkSkyController {
             return new ResponseEntity<>(new CustomErrorType("The city doesn't exist in the database!"), HttpStatus.BAD_REQUEST);
         }
 
-        Forecast forecast = wadsClient.getDarkSkyCurrentForecast(city.getName(), city.getCountry());
+        Forecast forecast = wadsClient.getDarkSkyCurrentForecast(city);
 
         if(forecast == null) {
             return new ResponseEntity<>(new CustomErrorType("Cannot get current "
@@ -181,7 +181,9 @@ public class DarkSkyController {
          * Convert units. possibly wre-write the method to support daily and currently
          */
 
-        return new ResponseEntity<>(forecast, HttpStatus.OK);
+        ObjectNode currentForecast = wadsClient.buildJsonForCurrentForecast(forecast);
+
+        return new ResponseEntity<>(currentForecast, HttpStatus.OK);
     }
 
 }

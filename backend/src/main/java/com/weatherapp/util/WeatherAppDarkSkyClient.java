@@ -19,6 +19,7 @@ import tk.plogitech.darksky.forecast.ForecastRequestBuilder;
 import tk.plogitech.darksky.forecast.GeoCoordinates;
 import tk.plogitech.darksky.forecast.Latitude;
 import tk.plogitech.darksky.forecast.Longitude;
+import tk.plogitech.darksky.forecast.model.Currently;
 import tk.plogitech.darksky.forecast.model.DailyDataPoint;
 import tk.plogitech.darksky.forecast.model.Forecast;
 
@@ -76,13 +77,10 @@ public class WeatherAppDarkSkyClient {
     
     /**
      * Returns the current forecast for the given city in the given country
-     * @param cityName The name of the city for which the forecast should be returned
-     * @param country The country in which the city is located
+     * @param city The city for which the forecast should be returned
      * @return The current forecast for the given city
      */
-    public Forecast getDarkSkyCurrentForecast(String cityName, String country) {
-
-        City city = cityRepository.findByNameAndCountry(cityName, country);
+    public Forecast getDarkSkyCurrentForecast(City city) {
 
         if(city == null) {
             return null;
@@ -195,7 +193,7 @@ public class WeatherAppDarkSkyClient {
         String cloudCoverUnit = (cloudCover != null) ? (" " + cloudCover.getMeasurementUnit()) : ("");
         String visibilityUnit = (visibility != null) ? (" " + visibility.getMeasurementUnit()) : ("");
 
-        json.put("time", darkSkyForecast.getTimeStamp());
+        json.put("timeStamp", darkSkyForecast.getTimeStamp());
         json.put("summary", darkSkyForecast.getSummary());
         json.put("icon", darkSkyForecast.getIcon());
         json.put("temperatureLow", darkSkyForecast.getTemperatureLow() + temperatureUnit);
@@ -246,6 +244,80 @@ public class WeatherAppDarkSkyClient {
         return json;
     }
 
+
+    /**
+     *
+     * @param forecast
+     * @return
+     */
+    public ObjectNode buildJsonForCurrentForecast(Forecast forecast) {
+
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode json = mapper.createObjectNode();
+
+        // Return an empty json if the forecast or the current forecast is null
+        if (forecast == null || forecast.getCurrently() == null) {
+            return json;
+        }
+
+        Currently currentForecast = forecast.getCurrently();
+
+        // First check if there are measurement units for these quantities saved in the database
+        // and then try to append them to the JSON in order to avoid NullPointer Exceptions
+        MeasurementUnit temperature = measurementUnitRepository.findByQuantity("temperature");
+        MeasurementUnit humidity = measurementUnitRepository.findByQuantity("humidity");
+        MeasurementUnit precipIntensity = measurementUnitRepository.findByQuantity("precipIntensity");
+        MeasurementUnit precipProbability = measurementUnitRepository.findByQuantity("precipProbability");
+        MeasurementUnit dewPoint = measurementUnitRepository.findByQuantity("dewPoint");
+        MeasurementUnit windSpeed = measurementUnitRepository.findByQuantity("windSpeed");
+        MeasurementUnit pressure = measurementUnitRepository.findByQuantity("pressure");
+        MeasurementUnit cloudCover = measurementUnitRepository.findByQuantity("cloudCover");
+        MeasurementUnit visibility = measurementUnitRepository.findByQuantity("visibility");
+
+        String temperatureUnit = (temperature != null) ? (" " + temperature.getMeasurementUnit()) : ("");
+        String humidityUnit = (humidity != null) ? (" " + humidity.getMeasurementUnit()) : ("");
+        String precipIntensityUnit = (precipIntensity != null) ? (" " + precipIntensity.getMeasurementUnit()) : ("");
+        String precipProbabilityUnit = (precipProbability != null) ? (" " + precipProbability.getMeasurementUnit()) : ("");
+        String dewPointUnit = (dewPoint != null) ? (" " + dewPoint.getMeasurementUnit()) : ("");
+        String windSpeedUnit = (windSpeed != null) ? (" " + windSpeed.getMeasurementUnit()) : ("");
+        String pressureUnit = (pressure != null) ? (" " + pressure.getMeasurementUnit()) : ("");
+        String cloudCoverUnit = (cloudCover != null) ? (" " + cloudCover.getMeasurementUnit()) : ("");
+        String visibilityUnit = (visibility != null) ? (" " + visibility.getMeasurementUnit()) : ("");
+
+
+        // Turn into percentage like with the daily forecast. There is no need for another
+        // method here, since we are only working wiht 1 current forecast
+        double precipIntensityValue = currentForecast.getPrecipIntensity() * 100;
+        double precipProbabilityValue = currentForecast.getPrecipProbability() * 100;
+        double humidityValue = currentForecast.getHumidity() * 100;
+        double cloudCoverValue = currentForecast.getCloudCover() * 100;
+
+        // Round to 2 decimal places
+        precipIntensityValue = Math.round(precipIntensityValue * 100.0) / 100.0;
+        precipProbabilityValue = Math.round(precipProbabilityValue * 100.0) / 100.0;
+        humidityValue = Math.round(humidityValue * 100.0) / 100.0;
+        cloudCoverValue = Math.round(cloudCoverValue * 100.0) / 100.0;
+
+        // Build JSON
+        json.put("timeStamp", currentForecast.getTime().getEpochSecond());
+        json.put("summary", currentForecast.getSummary());
+        json.put("icon", currentForecast.getIcon());
+        json.put("temperature", currentForecast.getTemperature() + temperatureUnit);
+        json.put("apparentTemperature", currentForecast.getApparentTemperature() + temperatureUnit);
+        json.put("humidity", humidityValue + humidityUnit);
+        json.put("precipIntensity", precipIntensityValue + precipIntensityUnit);
+        json.put("precipProbability", precipProbabilityValue + precipProbabilityUnit);
+        json.put("precipType", currentForecast.getPrecipType());
+        json.put("dewPoint", currentForecast.getDewPoint() + dewPointUnit);
+        json.put("windSpeed", currentForecast.getWindSpeed() + windSpeedUnit);
+        json.put("visibility", currentForecast.getVisibility() + visibilityUnit);
+        json.put("pressure", currentForecast.getPressure() + pressureUnit);
+        json.put("cloudCover", cloudCoverValue + cloudCoverUnit);
+
+        return json;
+    }
+
+
     /**
      * Converts the DailyDataPoint object from a Forecast object, which is
      * returned by the Dark Sky API, to a DarkSkyForecast object, which can be saved in the database
@@ -287,7 +359,7 @@ public class WeatherAppDarkSkyClient {
      * in the database and saves the data in the database
      * Fires every day at 12:00 and 18:00 UTC
      */
-    @Scheduled(cron = "0 0 12,18 * * ?")
+    @Scheduled(cron = "0 0 0,6,12,18 * * ?")
     private void getDarkSkyDailyForecastScheduled() {
 
         Iterable<City> cities = cityRepository.findAll();
