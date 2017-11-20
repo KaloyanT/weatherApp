@@ -23,6 +23,8 @@ import tk.plogitech.darksky.forecast.model.Currently;
 import tk.plogitech.darksky.forecast.model.DailyDataPoint;
 import tk.plogitech.darksky.forecast.model.Forecast;
 
+import javax.annotation.PostConstruct;
+
 @Component
 public class WeatherAppDarkSkyClient {
 
@@ -37,6 +39,54 @@ public class WeatherAppDarkSkyClient {
 
     @Autowired
     private DBClient dbClient;
+
+    // Hardcode the measurement units into variables so there is only 1 database
+    // access for them at Bean initialization and not at every request
+    private static String TEMPERATURE_UNIT;
+
+    private static String HUMIDITY_UNIT;
+
+    private static String WIND_SPEED_UNIT;
+
+    private static String PRECIP_INTENSITY_UNIT;
+
+    private static String PRECIP_PROBABILITY_UNIT;
+
+    private static String PRESSURE_UNIT;
+
+    private static String CLOUD_COVER_UNIT;
+
+    private static String VISIBILITY_UNIT;
+
+
+    /**
+     * Initializes the measurement units at Bean creation
+     */
+    @PostConstruct
+    private void initUnits() {
+
+        // First check if there are measurement units for these quantities saved in the database
+        MeasurementUnit temperature = measurementUnitRepository.findByQuantity("temperature");
+        MeasurementUnit humidity = measurementUnitRepository.findByQuantity("humidity");
+        MeasurementUnit precipIntensity = measurementUnitRepository.findByQuantity("precipIntensity");
+        MeasurementUnit precipProbability = measurementUnitRepository.findByQuantity("precipProbability");
+        MeasurementUnit windSpeed = measurementUnitRepository.findByQuantity("windSpeed");
+        MeasurementUnit pressure = measurementUnitRepository.findByQuantity("pressure");
+        MeasurementUnit cloudCover = measurementUnitRepository.findByQuantity("cloudCover");
+        MeasurementUnit visibility = measurementUnitRepository.findByQuantity("visibility");
+
+        // Now set the units. Insert an empty space before the unit itself to avoid doing that every
+        // time a unit is appended to the corresponding value
+        TEMPERATURE_UNIT = (temperature != null) ? (" " + temperature.getMeasurementUnit()) : ("");
+        HUMIDITY_UNIT = (humidity != null) ? (" " + humidity.getMeasurementUnit()) : ("");
+        PRECIP_INTENSITY_UNIT = (precipIntensity != null) ? (" " + precipIntensity.getMeasurementUnit()) : ("");
+        PRECIP_PROBABILITY_UNIT = (precipProbability != null) ? (" " + precipProbability.getMeasurementUnit()) : ("");
+        WIND_SPEED_UNIT = (windSpeed != null) ? (" " + windSpeed.getMeasurementUnit()) : ("");
+        PRESSURE_UNIT = (pressure != null) ? (" " + pressure.getMeasurementUnit()) : ("");
+        CLOUD_COVER_UNIT = (cloudCover != null) ? (" " + cloudCover.getMeasurementUnit()) : ("");
+        VISIBILITY_UNIT = (visibility != null) ? (" " + visibility.getMeasurementUnit()) : ("");
+    }
+
 
     /**
      * Returns the daily forecast for the current day and the next 7 days for the given
@@ -171,44 +221,22 @@ public class WeatherAppDarkSkyClient {
             return json;
         }
 
-        // First check if there are measurement units for these quantities saved in the database
-        // and then try to append them to the JSON in order to avoid NullPointer Exceptions
-        MeasurementUnit temperature = measurementUnitRepository.findByQuantity("temperature");
-        MeasurementUnit humidity = measurementUnitRepository.findByQuantity("humidity");
-        MeasurementUnit precipIntensity = measurementUnitRepository.findByQuantity("precipIntensity");
-        MeasurementUnit precipProbability = measurementUnitRepository.findByQuantity("precipProbability");
-        MeasurementUnit dewPoint = measurementUnitRepository.findByQuantity("dewPoint");
-        MeasurementUnit windSpeed = measurementUnitRepository.findByQuantity("windSpeed");
-        MeasurementUnit pressure = measurementUnitRepository.findByQuantity("pressure");
-        MeasurementUnit cloudCover = measurementUnitRepository.findByQuantity("cloudCover");
-        MeasurementUnit visibility = measurementUnitRepository.findByQuantity("visibility");
-
-        String temperatureUnit = (temperature != null) ? (" " + temperature.getMeasurementUnit()) : ("");
-        String humidityUnit = (humidity != null) ? (" " + humidity.getMeasurementUnit()) : ("");
-        String precipIntensityUnit = (precipIntensity != null) ? (" " + precipIntensity.getMeasurementUnit()) : ("");
-        String precipProbabilityUnit = (precipProbability != null) ? (" " + precipProbability.getMeasurementUnit()) : ("");
-        String dewPointUnit = (dewPoint != null) ? (" " + dewPoint.getMeasurementUnit()) : ("");
-        String windSpeedUnit = (windSpeed != null) ? (" " + windSpeed.getMeasurementUnit()) : ("");
-        String pressureUnit = (pressure != null) ? (" " + pressure.getMeasurementUnit()) : ("");
-        String cloudCoverUnit = (cloudCover != null) ? (" " + cloudCover.getMeasurementUnit()) : ("");
-        String visibilityUnit = (visibility != null) ? (" " + visibility.getMeasurementUnit()) : ("");
-
         json.put("timeStamp", darkSkyForecast.getTimeStamp());
         json.put("summary", darkSkyForecast.getSummary());
         json.put("icon", darkSkyForecast.getIcon());
-        json.put("temperatureLow", darkSkyForecast.getTemperatureLow() + temperatureUnit);
-        json.put("temperatureMax", darkSkyForecast.getTemperatureHigh() + temperatureUnit);
-        json.put("apparentTemperatureLow", darkSkyForecast.getApparentTemperatureLow() + temperatureUnit);
-        json.put("apparentTemperatureMax", darkSkyForecast.getApparentTemperatureHigh() + temperatureUnit);
-        json.put("humidity", darkSkyForecast.getHumidity() + humidityUnit);
-        json.put("precipIntensity", darkSkyForecast.getPrecipIntensity()+ precipIntensityUnit);
-        json.put("precipProbability", darkSkyForecast.getPrecipProbability() + precipProbabilityUnit);
+        json.put("temperatureLow", darkSkyForecast.getTemperatureLow() + TEMPERATURE_UNIT);
+        json.put("temperatureMax", darkSkyForecast.getTemperatureHigh() + TEMPERATURE_UNIT);
+        json.put("apparentTemperatureLow", darkSkyForecast.getApparentTemperatureLow() + TEMPERATURE_UNIT);
+        json.put("apparentTemperatureMax", darkSkyForecast.getApparentTemperatureHigh() + TEMPERATURE_UNIT);
+        json.put("humidity", darkSkyForecast.getHumidity() + HUMIDITY_UNIT);
+        json.put("precipIntensity", darkSkyForecast.getPrecipIntensity()+ PRECIP_INTENSITY_UNIT);
+        json.put("precipProbability", darkSkyForecast.getPrecipProbability() + PRECIP_PROBABILITY_UNIT);
         json.put("precipType", darkSkyForecast.getPrecipType());
-        json.put("dewPoint", darkSkyForecast.getDewPoint() + dewPointUnit);
-        json.put("windSpeed", darkSkyForecast.getWindSpeed() + windSpeedUnit);
-        json.put("visibility", darkSkyForecast.getVisibility() + visibilityUnit);
-        json.put("pressure", darkSkyForecast.getPressure() + pressureUnit);
-        json.put("cloudCover", darkSkyForecast.getCloudCover() + cloudCoverUnit);
+        json.put("dewPoint", darkSkyForecast.getDewPoint() + TEMPERATURE_UNIT);
+        json.put("windSpeed", darkSkyForecast.getWindSpeed() + WIND_SPEED_UNIT);
+        json.put("visibility", darkSkyForecast.getVisibility() + VISIBILITY_UNIT);
+        json.put("pressure", darkSkyForecast.getPressure() + PRESSURE_UNIT);
+        json.put("cloudCover", darkSkyForecast.getCloudCover() + CLOUD_COVER_UNIT);
 
         return json;
     }
@@ -262,29 +290,6 @@ public class WeatherAppDarkSkyClient {
 
         Currently currentForecast = forecast.getCurrently();
 
-        // First check if there are measurement units for these quantities saved in the database
-        // and then try to append them to the JSON in order to avoid NullPointer Exceptions
-        MeasurementUnit temperature = measurementUnitRepository.findByQuantity("temperature");
-        MeasurementUnit humidity = measurementUnitRepository.findByQuantity("humidity");
-        MeasurementUnit precipIntensity = measurementUnitRepository.findByQuantity("precipIntensity");
-        MeasurementUnit precipProbability = measurementUnitRepository.findByQuantity("precipProbability");
-        MeasurementUnit dewPoint = measurementUnitRepository.findByQuantity("dewPoint");
-        MeasurementUnit windSpeed = measurementUnitRepository.findByQuantity("windSpeed");
-        MeasurementUnit pressure = measurementUnitRepository.findByQuantity("pressure");
-        MeasurementUnit cloudCover = measurementUnitRepository.findByQuantity("cloudCover");
-        MeasurementUnit visibility = measurementUnitRepository.findByQuantity("visibility");
-
-        String temperatureUnit = (temperature != null) ? (" " + temperature.getMeasurementUnit()) : ("");
-        String humidityUnit = (humidity != null) ? (" " + humidity.getMeasurementUnit()) : ("");
-        String precipIntensityUnit = (precipIntensity != null) ? (" " + precipIntensity.getMeasurementUnit()) : ("");
-        String precipProbabilityUnit = (precipProbability != null) ? (" " + precipProbability.getMeasurementUnit()) : ("");
-        String dewPointUnit = (dewPoint != null) ? (" " + dewPoint.getMeasurementUnit()) : ("");
-        String windSpeedUnit = (windSpeed != null) ? (" " + windSpeed.getMeasurementUnit()) : ("");
-        String pressureUnit = (pressure != null) ? (" " + pressure.getMeasurementUnit()) : ("");
-        String cloudCoverUnit = (cloudCover != null) ? (" " + cloudCover.getMeasurementUnit()) : ("");
-        String visibilityUnit = (visibility != null) ? (" " + visibility.getMeasurementUnit()) : ("");
-
-
         // Turn into percentage like with the daily forecast. There is no need for another
         // method here, since we are only working wiht 1 current forecast
         double precipIntensityValue = currentForecast.getPrecipIntensity() * 100;
@@ -302,17 +307,17 @@ public class WeatherAppDarkSkyClient {
         json.put("timeStamp", currentForecast.getTime().getEpochSecond());
         json.put("summary", currentForecast.getSummary());
         json.put("icon", currentForecast.getIcon());
-        json.put("temperature", currentForecast.getTemperature() + temperatureUnit);
-        json.put("apparentTemperature", currentForecast.getApparentTemperature() + temperatureUnit);
-        json.put("humidity", humidityValue + humidityUnit);
-        json.put("precipIntensity", precipIntensityValue + precipIntensityUnit);
-        json.put("precipProbability", precipProbabilityValue + precipProbabilityUnit);
+        json.put("temperature", currentForecast.getTemperature() + TEMPERATURE_UNIT);
+        json.put("apparentTemperature", currentForecast.getApparentTemperature() + TEMPERATURE_UNIT);
+        json.put("humidity", humidityValue + HUMIDITY_UNIT);
+        json.put("precipIntensity", precipIntensityValue + PRECIP_INTENSITY_UNIT);
+        json.put("precipProbability", precipProbabilityValue + PRECIP_PROBABILITY_UNIT);
         json.put("precipType", currentForecast.getPrecipType());
-        json.put("dewPoint", currentForecast.getDewPoint() + dewPointUnit);
-        json.put("windSpeed", currentForecast.getWindSpeed() + windSpeedUnit);
-        json.put("visibility", currentForecast.getVisibility() + visibilityUnit);
-        json.put("pressure", currentForecast.getPressure() + pressureUnit);
-        json.put("cloudCover", cloudCoverValue + cloudCoverUnit);
+        json.put("dewPoint", currentForecast.getDewPoint() + TEMPERATURE_UNIT);
+        json.put("windSpeed", currentForecast.getWindSpeed() + WIND_SPEED_UNIT);
+        json.put("visibility", currentForecast.getVisibility() + VISIBILITY_UNIT);
+        json.put("pressure", currentForecast.getPressure() + PRESSURE_UNIT);
+        json.put("cloudCover", cloudCoverValue + CLOUD_COVER_UNIT);
 
         return json;
     }
@@ -353,6 +358,7 @@ public class WeatherAppDarkSkyClient {
 
         return darkSkyForecast;
     }
+
 
     /**
      * This is a scheduled method which gets the daily forecast from the API for each city

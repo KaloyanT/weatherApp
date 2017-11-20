@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import javax.annotation.PostConstruct;
 import java.util.Date;
 import java.util.Set;
 
@@ -43,6 +44,15 @@ public class ForecastController {
 
     @Autowired
     private WeatherAppDarkSkyClient wadsClient;
+
+    // Like with the WeatherAppDarkskyClient, load the measurement units in memory on start up
+    // in order to minimize database access
+    private static Iterable<MeasurementUnit> measurementUnits;
+
+    @PostConstruct
+    private void init() {
+        measurementUnits = measurementUnitRepository.findAll();
+    }
 
     @RequestMapping(value = "/get/all/{cityName}/{country}", method = RequestMethod.GET)
     public ResponseEntity<?> getAllForecastsForCity(@PathVariable("cityName") String cityName, @PathVariable("country") String country) {
@@ -66,13 +76,12 @@ public class ForecastController {
         // append them only if needed in the front-end. Adding a unit to each value
         // from each forecast will be very inefficient
         Set<DarkSkyForecast> forecastSet = darkSkyForecastRepository.getAllByCity(city);
-        Iterable<MeasurementUnit> unitsList = measurementUnitRepository.findAll();
 
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode response = mapper.createObjectNode();
 
         ArrayNode forecastsArray = mapper.valueToTree(forecastSet);
-        ArrayNode unitsArray = mapper.valueToTree(unitsList);
+        ArrayNode unitsArray = mapper.valueToTree(measurementUnits);
 
         response.putArray("forecasts").addAll(forecastsArray);
         response.putArray("units").addAll(unitsArray);
@@ -138,13 +147,12 @@ public class ForecastController {
 
         Set<DarkSkyForecast> forecastSet =
                 darkSkyForecastRepository.getAllByCityAndTimeStampBetween(city, start.toInstant().getEpochSecond(), end.toInstant().getEpochSecond());
-        Iterable<MeasurementUnit> unitsList = measurementUnitRepository.findAll();
 
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode response = mapper.createObjectNode();
 
         ArrayNode forecastsArray = mapper.valueToTree(forecastSet);
-        ArrayNode unitsArray = mapper.valueToTree(unitsList);
+        ArrayNode unitsArray = mapper.valueToTree(measurementUnits);
 
         response.putArray("forecasts").addAll(forecastsArray);
         response.putArray("units").addAll(unitsArray);

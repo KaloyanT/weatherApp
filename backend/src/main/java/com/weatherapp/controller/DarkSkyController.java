@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;;
 import tk.plogitech.darksky.forecast.model.DailyDataPoint;
 import tk.plogitech.darksky.forecast.model.Forecast;
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,6 +40,16 @@ public class DarkSkyController {
 
     @Autowired
     private DBClient dbClient;
+
+    // Like with the WeatherAppDarkskyClient, load the measurement units in memory on start up
+    // in order to minimize database access
+    private static Iterable<MeasurementUnit> measurementUnits;
+
+    @PostConstruct
+    private void init() {
+        measurementUnits = measurementUnitRepository.findAll();
+    }
+
 
     // hasRole requires the roles to be saved in the form ROLE_userRole, i.e. with a ROLE_ prefix
     // @PreAuthorize("hasRole('ADMIN')")
@@ -126,18 +137,14 @@ public class DarkSkyController {
             forecastList.add(wadsClient.buildJsonForDailyDataPoint(dailyDataPoint));
         }
 
-        // Add the units array to the JSON
-        Iterable<MeasurementUnit> measurementUnits = measurementUnitRepository.findAll();
-
         ObjectMapper mapper = new ObjectMapper();
         ArrayNode forecastArray = mapper.valueToTree(forecastList);
         ArrayNode unitsArray = mapper.valueToTree(measurementUnits);
 
         ObjectNode response = mapper.createObjectNode();
         response.putArray("forecast").addAll(forecastArray);
+        // Add the units array to the JSON
         response.putArray("units").addAll(unitsArray);
-
-        //response.add(unitsNode);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
