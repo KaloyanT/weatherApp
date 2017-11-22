@@ -4,6 +4,7 @@ import com.weatherapp.model.security.JwtUser;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.impl.TextCodec;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mobile.device.Device;
@@ -127,11 +128,16 @@ public class JwtTokenUtil {
         Date creationDate = generateCurrentDate();
         Date expirationDate = generateExpirationDate(creationDate);
 
+        // Encode the secret to base64 in order to have a valid JWT Signature
+        // Also MacProvider.generateKey(SignatureAlgorithm.HS512) can be used
+        // to generate better secret key
+        String base64EncodedSecret = TextCodec.BASE64.encode(this.secret);
+        
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(creationDate)
                 .setExpiration(expirationDate)
-                .signWith(SignatureAlgorithm.HS512, this.secret)
+                .signWith(SignatureAlgorithm.HS512, base64EncodedSecret)
                 .compact();
     }
 
