@@ -75,8 +75,11 @@ public class JwtTokenUtil {
     }
 
     private Claims getClaimsFromToken(String token) {
-         return Jwts.parser()
-                 .setSigningKey(this.secret)
+
+        String base64EncodedSecret = TextCodec.BASE64.encode(this.secret);
+
+        return Jwts.parser()
+                 .setSigningKey(base64EncodedSecret)
                  .parseClaimsJws(token)
                  .getBody();
     }
