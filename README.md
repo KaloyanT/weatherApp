@@ -3,8 +3,8 @@ Weather App
 
 This is a simple Weather App for personal usage, which can display the current weather in predefined cities around the world and can also save the weather
 data for each day for each city. The idea is to be able to display a weather history for the given city and to compare the weather in different cities. 
-I have planned to use Spring Boot and MySQL for the back-end and the database and React for the front-end. I also want to learn React by using it for this
-simple project, so that's why the front-end project folder is still missing. I am still learning... :)
+I have planned to use Spring Boot and MySQL for the back-end and the database and React for the front-end. Currently the front-end project is missing
+since I am still learning React. 
 
 Back end: 
 1. JDK 1.8+
@@ -18,6 +18,7 @@ This is, of course, if you attempt to run the back-end part of the project on it
 
 Front end: 
 1. Node.js + NPM 
+2. React
 
 Technologies: 
 HTML/CSS/JavaScript, React, JSX, Node.js, Bootstrap (3)
@@ -31,4 +32,4 @@ Currently the project is configured to run on one machine with every component r
 
 1. Clone or download the repository with both frond-end and back-end projects
 2. Navigate to the backend directory, open a terminal/cmd and write: "mvn clean package -DskipTests docker:build"
-3. Navigate to the root directory of the project, open a terminal/cmd and write: "docker-compose up --build --force-recreate"
+3. Navigate to the root directory of the project, open a terminal/cmd and write: "docker-compose up --build --force-recreate -d"
