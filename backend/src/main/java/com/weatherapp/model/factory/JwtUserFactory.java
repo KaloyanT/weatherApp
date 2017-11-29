@@ -6,7 +6,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import java.util.Collection;
 
-
 public class JwtUserFactory {
 
     public static JwtUser create(User user) {
@@ -25,12 +24,4 @@ public class JwtUserFactory {
                 authorities
         );
     }
-
-    /*
-    private static List<GrantedAuthority> mapToGrantedAuthorities(List<Authority> authorities) {
-        return authorities.stream()
-                .map(authority -> new SimpleGrantedAuthority(authority.getName().name()))
-                .collect(Collectors.toList());
-    }
-    */
 }

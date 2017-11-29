@@ -22,7 +22,6 @@ import tk.plogitech.darksky.forecast.Longitude;
 import tk.plogitech.darksky.forecast.model.Currently;
 import tk.plogitech.darksky.forecast.model.DailyDataPoint;
 import tk.plogitech.darksky.forecast.model.Forecast;
-
 import javax.annotation.PostConstruct;
 
 @Component

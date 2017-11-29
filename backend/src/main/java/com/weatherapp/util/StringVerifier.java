@@ -1,8 +1,6 @@
 package com.weatherapp.util;
 
-
 import org.apache.commons.validator.routines.EmailValidator;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
