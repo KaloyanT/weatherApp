@@ -24,8 +24,6 @@ services:
       - DATABASE_USER=weatherapp_db_user
       - DATABASE_PASSWORD=weatherAppDB_pwd
       - TOKEN_HEADER=Authorization
-      - TOKEN_SECRET=
-      - TOKEN_PREFIX=
       - TOKEN_EXPIRATION=
       - DARKSKY_API_KEY=
     # To be further configured

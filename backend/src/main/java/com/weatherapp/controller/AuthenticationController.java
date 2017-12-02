@@ -84,7 +84,20 @@ public class AuthenticationController {
 
     @RequestMapping(value = "/refresh", method = RequestMethod.GET)
     public ResponseEntity<?> authenticationRequest(HttpServletRequest request) {
+
+        if(request == null) {
+            return ResponseEntity.badRequest().body(null);
+        }
+
         String token = request.getHeader(this.tokenHeader);
+
+        if(!StringVerifier.validString(token)) {
+            return ResponseEntity.badRequest().body(null);
+        }
+
+        // Strip the Bearer prefix if the token is not null or empty
+        token = token.substring(7);
+
         String username = this.jwtTokenUtil.getUsernameFromToken(token);
         JwtUser user = (JwtUser) this.userDetailsService.loadUserByUsername(username);
         if (this.jwtTokenUtil.canTokenBeRefreshed(token, user.getLastPasswordResetDate())) {
