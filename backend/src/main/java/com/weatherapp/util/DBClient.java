@@ -6,9 +6,6 @@ import com.weatherapp.repository.DarkSkyForecastRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import tk.plogitech.darksky.forecast.model.DailyDataPoint;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 @Component
 public class DBClient {
@@ -34,6 +31,7 @@ public class DBClient {
             return null;
         }
 
+        /*
         // Format the date to dd/MM/yyyy to strip the time from the Dark Sky API
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         String dateAsStr = sdf.format(Date.from(dailyForecast.getTime()));
@@ -43,8 +41,9 @@ public class DBClient {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-
-        long timeStamp = temp.toInstant().getEpochSecond();
+        */
+        //long timeStamp = temp.toInstant().getEpochSecond();
+        long timeStamp = dailyForecast.getTime().getEpochSecond();
 
         // Check if a forecast for the given date and city already exists and if so, just update it
         DarkSkyForecast darkSkyForecast = darkSkyForecastRepository.getByCityAndTimeStamp(city, timeStamp);

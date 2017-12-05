@@ -84,6 +84,7 @@ public class ForecastController {
         ArrayNode unitsArray = mapper.valueToTree(measurementUnits);
 
         response.putArray("forecasts").addAll(forecastsArray);
+        response.put("timezone", city.getTimezone());
         response.putArray("units").addAll(unitsArray);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -116,6 +117,7 @@ public class ForecastController {
 
         // Since we have only the forecast for 1 day and 1 city, we can add units to the data
         ObjectNode response = wadsClient.buildJsonForDarkSkyForecastWithUnits(darkSkyForecast);
+        response.put("timezone", city.getTimezone());
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -155,6 +157,7 @@ public class ForecastController {
         ArrayNode unitsArray = mapper.valueToTree(measurementUnits);
 
         response.putArray("forecasts").addAll(forecastsArray);
+        response.put("timezone", city.getTimezone());
         response.putArray("units").addAll(unitsArray);
 
         return new ResponseEntity<>(response, HttpStatus.OK);

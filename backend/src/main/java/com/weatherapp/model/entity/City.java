@@ -45,6 +45,10 @@ public class City {
     private String country;
 
     // private TimeZone timeZone;
+    @Basic(optional = false)
+    @Column(name = "timezone")
+    @NotNull
+    private String timezone;
 
     @OneToMany(mappedBy = "city", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JsonIgnore
@@ -88,6 +92,14 @@ public class City {
 
     public void setCountry(String country) {
         this.country = country;
+    }
+
+    public String getTimezone() {
+        return timezone;
+    }
+
+    public void setTimezone(String timezone) {
+        this.timezone = timezone;
     }
 
     public Set<DarkSkyForecast> getDarkSkyForecasts() {

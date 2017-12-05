@@ -86,6 +86,7 @@ public class DarkSkyController {
 
         // Add measurement units to the response
         ObjectNode response = wadsClient.buildJsonForDarkSkyForecastWithUnits(darkSkyForecast);
+        response.put("timezone", city.getTimezone());
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -143,6 +144,7 @@ public class DarkSkyController {
 
         ObjectNode response = mapper.createObjectNode();
         response.putArray("forecast").addAll(forecastArray);
+        response.put("timezone", city.getTimezone());
         // Add the units array to the JSON
         response.putArray("units").addAll(unitsArray);
 
