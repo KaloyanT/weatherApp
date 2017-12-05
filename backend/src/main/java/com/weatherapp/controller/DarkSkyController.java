@@ -191,6 +191,7 @@ public class DarkSkyController {
          */
 
         ObjectNode currentForecast = wadsClient.buildJsonForCurrentForecast(forecast);
+        currentForecast.put("timezone", city.getTimezone());
 
         return new ResponseEntity<>(currentForecast, HttpStatus.OK);
     }
