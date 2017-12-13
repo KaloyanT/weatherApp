@@ -224,7 +224,7 @@ public class WeatherAppDarkSkyClient {
         json.put("summary", darkSkyForecast.getSummary());
         json.put("icon", darkSkyForecast.getIcon());
         json.put("temperatureLow", darkSkyForecast.getTemperatureLow() + TEMPERATURE_UNIT);
-        json.put("temperatureMax", darkSkyForecast.getTemperatureHigh() + TEMPERATURE_UNIT);
+        json.put("temperatureHigh", darkSkyForecast.getTemperatureHigh() + TEMPERATURE_UNIT);
         json.put("apparentTemperatureLow", darkSkyForecast.getApparentTemperatureLow() + TEMPERATURE_UNIT);
         json.put("apparentTemperatureHigh", darkSkyForecast.getApparentTemperatureHigh() + TEMPERATURE_UNIT);
         json.put("humidity", darkSkyForecast.getHumidity() + HUMIDITY_UNIT);

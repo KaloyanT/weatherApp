@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Current Forecast</title>
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+
+    <link href="css/style.css" rel="stylesheet">
+
+</head>
+<body>
+
+<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="./index.html">Home</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="login.html">Login</a>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="http://www.kaloyantodorov.com" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Weather Info</a>
+                <div class="dropdown-menu" aria-labelledby="dropdown01">
+                    <a class="dropdown-item" href="current.html">Current Forecast</a>
+                    <a class="dropdown-item" href="daily.html">Daily Forecast</a>
+                    <a class="dropdown-item" href="past.html">Forecast History</a>
+                    <a class="dropdown-item" href="city.html">City Manager</a>
+                </div>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<main role="main" class="container">
+
+    <div id="apiResponseDiv" class="col-lg-12">
+
+        <div id="apiDataInputDiv" class="input-group col-lg-12">
+            <select id="cityCountrySelect" class="col-lg-4"></select>
+            <span class="input-group-btn">
+                <button id="getAllForecastDataBtn" class="btn btn-success" onclick="getCurrentForecastForCity()" class="col-lg-4">Get Forecast</button>
+            </span>
+            <a href="https://darksky.net/poweredby/" target="_blank" class="col-lg-4">Powered by Dark Sky</a>
+            <br>
+        </div>
+        <br>
+        <pre id="responseHeading" class="col-lg-12"></pre>
+    </div>
+
+    <div id="tableDiv" class="container col-lg-12">
+    </div>  
+</main>
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+<script src="script/city.js"></script>
+<script src="script/tableUtil.js"></script>
+<script src="script/current.js"></script>
+</body>
+</html>

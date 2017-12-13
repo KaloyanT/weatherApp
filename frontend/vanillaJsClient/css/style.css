@@ -1,0 +1,85 @@
+body {
+  padding-top: 5rem;
+  background-color: #eee;
+}
+
+.starter-template {
+  padding: 3rem 1.5rem;
+  text-align: center;
+}
+
+
+#cityCountrySelect {
+  margin-right: 10px;
+}
+
+
+#startDate {
+  margin-right: 5px;
+}
+
+#endDate {
+  margin-right: 5px;
+}
+
+table, th, td {
+  margin: 0 auto;
+  margin-left: auto;
+  margin-right: auto;
+  border: solid 1px #333;
+  padding: 2px 4px;
+  font: 15px Verdana;
+  text-align: center;
+  position: center;
+}
+
+th {
+  font-weight: bold;
+}
+
+
+#loginBody, #cityBody {
+    padding-top: 40px;
+    padding-bottom: 40px;
+    background-color: #eee;
+}
+
+.form-signin, .form-cityInsert {
+    max-width: 330px;
+    padding: 15px;
+    margin: 0 auto;
+}
+
+.form-signin .form-signin-heading,
+.form-signin .checkbox, .form-cityInsert .form-cityInsert-heading,
+.form-cityInsert .checkbox {
+    margin-bottom: 10px;
+}
+
+.form-signin .form-control, .form-cityInsert .checkbox {
+    font-weight: 400;
+}
+
+.form-signin .form-control, .form-cityInsert .form-control {
+    position: relative;
+    box-sizing: border-box;
+    height: auto;
+    padding: 10px;
+    font-size: 16px;
+}
+
+.form-signin .form-control:focus, .form-cityInsert .form-control:focus {
+    z-index: 2;
+}
+
+.form-cityInsert input[type="text"], .form-signin input[type="email"] {
+    margin-bottom: -1px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.form-signin input[type="password"] {
+    margin-bottom: 10px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
